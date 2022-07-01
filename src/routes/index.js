@@ -1,0 +1,16 @@
+const express = require('express')
+const Route = express.Router()
+const ruanganRouter = require('../modules/dataPeminjam/dataPeminjam_routes')
+const authRouter = require('../modules/auth/auth_routes')
+const userRouter = require('../modules/user/user_routes')
+const bookingRuanganRouter = require('../modules/bookingRuangan/bookingRuangan_routes')
+const laporanRuanganRouter = require('../modules/laporanRuangan/laporanRuangan_routes')
+const waitingListRouter = require('../modules/waitingList/waitingList_routes')
+
+Route.use('/waitinglist', waitingListRouter)
+Route.use('/ruangan', ruanganRouter)
+Route.use('/bookingruangan', bookingRuanganRouter)
+Route.use('/user', userRouter)
+Route.use('/auth', authRouter)
+Route.use('/laporanruangan', laporanRuanganRouter)
+module.exports = Route
