@@ -127,7 +127,7 @@ module.exports = {
   },
   postWaitingListLebihSatu: async (req, res) => {
     try {
-      console.log('Controller1', req.body)
+      console.log('Controller12', req)
       console.log('Controller1', req.file)
       const {
         ruangNamaPeminjam,
@@ -143,8 +143,7 @@ module.exports = {
         ruangPenanggungJawab,
         ruangYangDigunakan,
         ruangWaktuMulai,
-        ruangWaktuAkhir,
-        idUserr
+        ruangWaktuAkhir
         // ruangBuktiSuratDina
       } = req.body
       const d1 = new Date(ruangTanggalBooking)
@@ -170,7 +169,7 @@ module.exports = {
         booking_ruangan_ruangan: ruangYangDigunakan,
         booking_ruangan_waktu_penggunaan_awal: ruangWaktuMulai,
         booking_ruangan_waktu_penggunaan_akhir: ruangWaktuAkhir,
-        id_peminjam: idUserr,
+        id_peminjam: req.decodeToken.id,
         booking_ruangan_surat_dinas: req.file ? req.file.filename : ''
       }
       console.log('satsetsatset', setData)

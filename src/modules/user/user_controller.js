@@ -59,7 +59,6 @@ module.exports = {
       const {
         NamaLengkapPeminjam,
         userName,
-        teamKerja,
         email,
         nohp,
         password,
@@ -76,7 +75,6 @@ module.exports = {
       const setData = {
         user_name: NamaLengkapPeminjam,
         user_username: userName,
-        user_team_kerja: teamKerja,
         user_password: encryptPassword,
         user_email: email,
         user_phone_number: nohp,
@@ -129,7 +127,6 @@ module.exports = {
         const {
           NamaLengkapPeminjam,
           userName,
-          teamKerja,
           email,
           nohp,
           password,
@@ -142,7 +139,6 @@ module.exports = {
         const setData = {
           user_name: NamaLengkapPeminjam,
           user_username: userName,
-          user_team_kerja: teamKerja,
           user_email: email,
           user_phone_number: nohp,
           user_password: encryptPassword,
