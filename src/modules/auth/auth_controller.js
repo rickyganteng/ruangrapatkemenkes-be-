@@ -154,7 +154,6 @@ module.exports = {
       } else {
         return helper.response(res, 400, 'Bad Request')
       }
-      // console.log('PASSS', req.body.userPassword)
 
       const setData = {}
       for (const key in req.body) {

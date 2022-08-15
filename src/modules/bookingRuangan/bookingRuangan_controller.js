@@ -79,12 +79,10 @@ module.exports = {
       return helper.response(res, 200, 'Succes Get Booking Data', result, pageInfo)
     } catch (error) {
       return helper.response(res, 400, 'Bad Request', error)
-      // console.log(error);
     }
   },
   getAllBookingRuangan: async (req, res) => {
     try {
-      // console.log(req.query)
       let { page, limit, sort, keywords } = req.query
       console.log(sort)
       console.log('s', page)
