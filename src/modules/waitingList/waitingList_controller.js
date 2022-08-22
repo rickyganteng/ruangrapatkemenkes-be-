@@ -28,7 +28,7 @@ module.exports = {
       limit = limit || '6'
       page = page || '1'
       keywords = keywords || '%'
-      sort = sort || 'id ASC'
+      sort = sort || 'id DESC'
 
       page = parseInt(page)
       limit = parseInt(limit)

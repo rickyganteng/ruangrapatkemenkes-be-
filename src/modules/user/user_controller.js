@@ -121,45 +121,38 @@ module.exports = {
       const { id } = req.params
       // kondisi pengecekan apakah data ada dalam database berdasarakan id
       let result = await userModel.getDataById(id)
-      // console.log(result[0], '--', req.file)
+      console.log('ini result', result[0])
+      console.log('ini body', req.body)
 
       if (result.length > 0) {
         const {
-          NamaLengkapPeminjam,
-          userName,
-          email,
-          nohp,
-          password,
-          userRole,
-          userVerif,
-          userUnitKerja
+          passwordUser
         } = req.body
         const salt = bcrypt.genSaltSync(10)
-        const encryptPassword = bcrypt.hashSync(password, salt)
+        const encryptPassword = bcrypt.hashSync(passwordUser, salt)
         const setData = {
-          user_name: NamaLengkapPeminjam,
-          user_username: userName,
-          user_email: email,
-          user_phone_number: nohp,
+          user_name: result[0].user_name,
+          user_username: result[0].user_username,
+          user_email: result[0].user_email,
+          user_phone_number: result[0].user_phone_number,
           user_password: encryptPassword,
-          user_role: userRole,
-          user_verification: userVerif,
-          user_unit_kerja: userUnitKerja,
+          user_role: result[0].user_role,
+          user_verification: result[0].user_verification,
+          user_unit_kerja: result[0].user_unit_kerja,
           user_updated_at: new Date(Date.now())
         }
-
-        // if (req.file) {
-        //   console.log('ada file')
-        //   if (result[0].booking_ruangan_surat_dinas.length > 0) {
-        //     console.log(`Delete Image${result[0].booking_ruangan_surat_dinas}`)
-        //     const imgLoc = `src/uploads/${result[0].booking_ruangan_surat_dinas}`
-        //     helper.deleteImage(imgLoc)
-        //   } else {
-        //     console.log('NO img in DB')
-        //   }
-        // }
-        // console.log('UPDATE DATA', req.body)
-        // console.log(setData)
+        if (req.file) {
+          console.log('ada file')
+          if (result[0].booking_ruangan_surat_dinas.length > 0) {
+            console.log(`Delete Image${result[0].booking_ruangan_surat_dinas}`)
+            const imgLoc = `src/uploads/${result[0].booking_ruangan_surat_dinas}`
+            helper.deleteImage(imgLoc)
+          } else {
+            console.log('NO img in DB')
+          }
+        }
+        console.log('UPDATE DATA', req.body)
+        console.log(setData)
         // console.log('MOVIE IMAGE DB', result[0].movie_image.length)
 
         result = await userModel.updateData(setData, id)
@@ -174,6 +167,7 @@ module.exports = {
       }
     } catch (error) {
       return helper.response(res, 400, 'Bad Request', error)
+      // console.log(error);
     }
   },
   deletedUser: async (req, res) => {
