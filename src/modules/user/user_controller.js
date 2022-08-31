@@ -126,19 +126,28 @@ module.exports = {
 
       if (result.length > 0) {
         const {
-          passwordUser
+          password,
+          NamaLengkapPeminjam,
+          userName,
+          email,
+          nohp,
+          userRole,
+          userUnitKerja,
+          userVerif
         } = req.body
+        console.log('req body ya', req.body.NamaLengkapPeminjam);
+        console.log('req body ya', req.body.password);
         const salt = bcrypt.genSaltSync(10)
-        const encryptPassword = bcrypt.hashSync(passwordUser, salt)
+        const encryptPassword = bcrypt.hashSync(password, salt)
         const setData = {
-          user_name: result[0].user_name,
-          user_username: result[0].user_username,
-          user_email: result[0].user_email,
-          user_phone_number: result[0].user_phone_number,
+          user_name: NamaLengkapPeminjam === '' ? result[0].user_name : NamaLengkapPeminjam,
+          user_username: userName === '' ? result[0].user_username : userName,
+          user_email: email === '' ? result[0].user_email : email,
+          user_phone_number: nohp === '' ? result[0].user_phone_number : nohp,
           user_password: encryptPassword,
-          user_role: result[0].user_role,
-          user_verification: result[0].user_verification,
-          user_unit_kerja: result[0].user_unit_kerja,
+          user_role: userRole === '' ? result[0].user_role : userRole,
+          user_verification: userUnitKerja === '' ? result[0].user_verification : userUnitKerja,
+          user_unit_kerja: userVerif === '' ? result[0].user_unit_kerja : userVerif,
           user_updated_at: new Date(Date.now())
         }
         if (req.file) {
@@ -166,8 +175,8 @@ module.exports = {
         )
       }
     } catch (error) {
-      return helper.response(res, 400, 'Bad Request', error)
-      // console.log(error);
+      // return helper.response(res, 400, 'Bad Request', error)
+      console.log(error);
     }
   },
   deletedUser: async (req, res) => {

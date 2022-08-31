@@ -241,5 +241,19 @@ module.exports = {
     } catch (error) {
       return helper.response(res, 400, 'Bad Request', error)
     }
+  },
+  deletedLaporanAktivitasAll: async (req, res) => {
+    try {
+      const result = await bookingRuanganModel.deleteDataAll()
+
+      // if (result.length > 0) {
+      return helper.response(res, 200, 'Succes Delete Data All', result)
+      // } else {
+      // return helper.response(res, 404, 'Data not Found', null)
+      // }
+    } catch (error) {
+      return helper.response(res, 400, 'Bad Request', error)
+      // console.log(error);
+    }
   }
 }

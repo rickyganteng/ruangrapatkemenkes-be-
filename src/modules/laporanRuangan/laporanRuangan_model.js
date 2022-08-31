@@ -124,5 +124,15 @@ module.exports = {
         }
       )
     })
+  },
+  deleteDataAll: () => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'DELETE FROM laporan_ruangan',
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
+      )
+    })
   }
 }

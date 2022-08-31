@@ -44,5 +44,8 @@ Route.delete(
 
   bookingRuangController.deletedLaporanRuangan
 )
-
+Route.delete(
+  '/',
+  bookingRuangController.deletedLaporanAktivitasAll
+)
 module.exports = Route
