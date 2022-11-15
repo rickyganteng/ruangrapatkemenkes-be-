@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
 })
 
 const fileFilter = (req, file, callback) => {
-  const listExt = ['.jpg', '.png', '.jpeg', '.pdf']
+  const listExt = ['.jpg', '.png', '.jpeg', '.pdf', '.doc', 'docx']
   const ext = path.extname(file.originalname).toLowerCase()
   if (listExt.includes(ext)) {
     callback(null, true)

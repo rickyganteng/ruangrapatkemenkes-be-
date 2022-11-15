@@ -41,7 +41,11 @@ module.exports = {
       //   limit,
       //   totalData
       // }
-      const result = await bookingRuanganModel.getDataAllTanggal(searchtanggal, fromdate, todate)
+      const result = await bookingRuanganModel.getDataAllTanggal(
+        searchtanggal,
+        fromdate,
+        todate
+      )
       return helper.response(res, 200, 'Succes Get Booking Data', result)
     } catch (error) {
       return helper.response(res, 400, 'Bad Request', error)
@@ -73,17 +77,16 @@ module.exports = {
         limit,
         totalData
       }
-      const result = await bookingRuanganModel.getDataAll(limit, offset, keywords, sort)
+      const result = await bookingRuanganModel.getDataAll(
+        limit,
+        offset,
+        keywords,
+        sort
+      )
       // simpan data di redis
 
       // console.log('DATA RES', result.length)
-      return helper.response(
-        res,
-        200,
-        'Succes Get All Data',
-        result,
-        pageInfo
-      )
+      return helper.response(res, 200, 'Succes Get All Data', result, pageInfo)
     } catch (error) {
       // return helper.response(res, 400, 'Bad Request', error)
       console.log(error)
@@ -254,6 +257,36 @@ module.exports = {
     } catch (error) {
       return helper.response(res, 400, 'Bad Request', error)
       // console.log(error);
+    }
+  },
+  deletedLaporanBooking: async (req, res) => {
+    try {
+      // console.log(req.params)
+      const { id } = req.params
+      let result = await bookingRuanganModel.getDataById(id)
+      // console.log(result)
+
+      if (result.length > 0) {
+        // console.log(`Delete Image${result[0].booking_ruangan_surat_dinas}`)
+        const imgLoc = `src/uploads/${result[0].booking_ruangan_surat_dinas}`
+        helper.deleteImage(imgLoc)
+        result = await bookingRuanganModel.deleteData(id)
+        return helper.response(
+          res,
+          200,
+          `Succes Delete Movie With ID ${id}`,
+          result
+        )
+      } else {
+        return helper.response(
+          res,
+          404,
+          `Cannot Delete !.s Data by Id ${id} not Found !`,
+          null
+        )
+      }
+    } catch (error) {
+      return helper.response(res, 400, 'Bad Request', error)
     }
   }
 }

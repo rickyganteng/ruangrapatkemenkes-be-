@@ -99,12 +99,7 @@ module.exports = {
           const result = await userModel.register(setData)
           delete result.user_password
 
-          return helper.response(
-            res,
-            200,
-            'Succes register !',
-            result
-          )
+          return helper.response(res, 200, 'Succes register !', result)
         } else {
           return helper.response(res, 400, 'Username has been registered')
         }
@@ -135,19 +130,24 @@ module.exports = {
           userUnitKerja,
           userVerif
         } = req.body
-        console.log('req body ya', req.body.NamaLengkapPeminjam);
-        console.log('req body ya', req.body.password);
+        console.log('req body ya', req.body.NamaLengkapPeminjam)
+        console.log('req body ya', req.body.password)
         const salt = bcrypt.genSaltSync(10)
         const encryptPassword = bcrypt.hashSync(password, salt)
         const setData = {
-          user_name: NamaLengkapPeminjam === '' ? result[0].user_name : NamaLengkapPeminjam,
+          user_name:
+            NamaLengkapPeminjam === ''
+              ? result[0].user_name
+              : NamaLengkapPeminjam,
           user_username: userName === '' ? result[0].user_username : userName,
           user_email: email === '' ? result[0].user_email : email,
           user_phone_number: nohp === '' ? result[0].user_phone_number : nohp,
           user_password: encryptPassword,
           user_role: userRole === '' ? result[0].user_role : userRole,
-          user_verification: userUnitKerja === '' ? result[0].user_verification : userUnitKerja,
-          user_unit_kerja: userVerif === '' ? result[0].user_unit_kerja : userVerif,
+          user_verification:
+            userVerif === '' ? result[0].user_verification : userVerif,
+          user_unit_kerja:
+            userUnitKerja === '' ? result[0].user_unit_kerja : userUnitKerja,
           user_updated_at: new Date(Date.now())
         }
         if (req.file) {
@@ -176,7 +176,7 @@ module.exports = {
       }
     } catch (error) {
       // return helper.response(res, 400, 'Bad Request', error)
-      console.log(error);
+      console.log(error)
     }
   },
   deletedUser: async (req, res) => {

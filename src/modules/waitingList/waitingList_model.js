@@ -24,12 +24,9 @@ module.exports = {
   },
   getDataAllTanpaFill: () => {
     return new Promise((resolve, reject) => {
-      connection.query(
-        'SELECT * FROM waitinglist_ruangan',
-        (error, result) => {
-          !error ? resolve(result) : reject(new Error(error))
-        }
-      )
+      connection.query('SELECT * FROM waitinglist_ruangan', (error, result) => {
+        !error ? resolve(result) : reject(new Error(error))
+      })
     })
   },
   getDataAll: (limit, offset, keywords, sort) => {
@@ -69,18 +66,22 @@ module.exports = {
   },
   createData: (setData) => {
     return new Promise((resolve, reject) => {
-      connection.query('INSERT INTO waitinglist_ruangan SET ?', setData, (error, result) => {
-        // !error ? resolve({result.insertId, ...setData}) : reject(new Error(error))
-        if (!error) {
-          const newResult = {
-            id: result.insertId,
-            ...setData
+      connection.query(
+        'INSERT INTO waitinglist_ruangan SET ?',
+        setData,
+        (error, result) => {
+          // !error ? resolve({result.insertId, ...setData}) : reject(new Error(error))
+          if (!error) {
+            const newResult = {
+              id: result.insertId,
+              ...setData
+            }
+            resolve(newResult)
+          } else {
+            reject(new Error(error))
           }
-          resolve(newResult)
-        } else {
-          reject(new Error(error))
         }
-      })
+      )
     })
   },
   updateData: (setData, id) => {
@@ -113,21 +114,49 @@ module.exports = {
       )
     })
   },
-  getDataCondition: (ruangYangDigunakan, d1Getime1, ruangWaktuMulai, ruangWaktuAkhir) => {
+  getDataCondition: (
+    ruangYangDigunakan,
+    d1Getime1,
+    ruangWaktuMulai,
+    ruangWaktuAkhir
+  ) => {
     return new Promise((resolve, reject) => {
-      connection.query('SELECT * FROM waitinglist_ruangan WHERE booking_ruangan_ruangan = ?  AND booking_ruangan_tanggal = ? AND booking_ruangan_waktu_penggunaan_akhir >= ? AND booking_ruangan_waktu_penggunaan_awal <= ? ', [ruangYangDigunakan, d1Getime1, ruangWaktuMulai, ruangWaktuAkhir], (error, result) => {
-        !error ? resolve(result) : reject(new Error(error))
-      })
+      connection.query(
+        'SELECT * FROM waitinglist_ruangan WHERE booking_ruangan_ruangan = ?  AND booking_ruangan_tanggal = ? AND booking_ruangan_waktu_penggunaan_akhir >= ? AND booking_ruangan_waktu_penggunaan_awal <= ? ',
+        [ruangYangDigunakan, d1Getime1, ruangWaktuMulai, ruangWaktuAkhir],
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
+      )
     })
   },
-  getDataConditionBooking: (ruangYangDigunakan, ruangTanggalBooking, ruangWaktuMulai, ruangWaktuAkhir, ruangTanggalBookingAkhir) => {
+  getDataConditionBooking: (
+    ruangYangDigunakan,
+    ruangTanggalBooking,
+    ruangWaktuMulai,
+    ruangWaktuAkhir,
+    ruangTanggalBookingAkhir
+  ) => {
     return new Promise((resolve, reject) => {
-      connection.query('SELECT * FROM booking_ruangan WHERE booking_ruangan_ruangan = ?  AND booking_ruangan_tanggal = ? AND booking_ruangan_waktu_penggunaan_akhir >= ? AND booking_ruangan_waktu_penggunaan_awal <= ?  ', [ruangYangDigunakan, ruangTanggalBooking, ruangWaktuMulai, ruangWaktuAkhir], (error, result) => {
-        !error ? resolve(result) : reject(new Error(error))
-      })
+      connection.query(
+        'SELECT * FROM booking_ruangan WHERE booking_ruangan_ruangan = ?  AND booking_ruangan_tanggal = ? AND booking_ruangan_waktu_penggunaan_akhir >= ? AND booking_ruangan_waktu_penggunaan_awal <= ?  ',
+        [
+          ruangYangDigunakan,
+          ruangTanggalBooking,
+          ruangWaktuMulai,
+          ruangWaktuAkhir
+        ],
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
+      )
     })
   },
-  getDataConditionLebihSatu: (ruangYangDigunakan, ruangTanggalBooking, ruangTanggalBookingAkhir) => {
+  getDataConditionLebihSatu: (
+    ruangYangDigunakan,
+    ruangTanggalBooking,
+    ruangTanggalBookingAkhir
+  ) => {
     const a = 1
     console.log('hehe', a)
     console.log('hehe', ruangYangDigunakan)
@@ -136,16 +165,29 @@ module.exports = {
     // console.log('hehe', ruangWaktuAkhir)
     console.log('hehe', ruangTanggalBookingAkhir)
     return new Promise((resolve, reject) => {
-      connection.query('SELECT * FROM waitinglist_ruangan WHERE booking_ruangan_ruangan = ? AND booking_ruangan_tanggal = ? AND booking_ruangan_waktu_penggunaan_awal < ? AND booking_ruangan_waktu_penggunaan_akhir > ?', [ruangYangDigunakan, ruangTanggalBooking, ruangTanggalBookingAkhir], (error, result) => {
-        !error ? resolve(result) : reject(new Error(error))
-      })
+      connection.query(
+        'SELECT * FROM waitinglist_ruangan WHERE booking_ruangan_ruangan = ? AND booking_ruangan_tanggal = ? AND booking_ruangan_waktu_penggunaan_awal < ? AND booking_ruangan_waktu_penggunaan_akhir > ?',
+        [ruangYangDigunakan, ruangTanggalBooking, ruangTanggalBookingAkhir],
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
+      )
     })
   },
-  getDataConditionBookingLebihSatu: (ruangYangDigunakan, d1Getime1, ruangWaktuMulai, ruangWaktuAkhir) => {
+  getDataConditionBookingLebihSatu: (
+    ruangYangDigunakan,
+    d1Getime1,
+    ruangWaktuMulai,
+    ruangWaktuAkhir
+  ) => {
     return new Promise((resolve, reject) => {
-      connection.query('SELECT * FROM booking_ruangan WHERE booking_ruangan_ruangan = ?  AND booking_ruangan_tanggal = ? AND booking_ruangan_waktu_penggunaan_akhir >= ? AND booking_ruangan_waktu_penggunaan_awal <= ?  ', [ruangYangDigunakan, d1Getime1, ruangWaktuMulai, ruangWaktuAkhir], (error, result) => {
-        !error ? resolve(result) : reject(new Error(error))
-      })
+      connection.query(
+        'SELECT * FROM booking_ruangan WHERE booking_ruangan_ruangan = ?  AND booking_ruangan_tanggal = ? AND booking_ruangan_waktu_penggunaan_akhir >= ? AND booking_ruangan_waktu_penggunaan_awal <= ?  ',
+        [ruangYangDigunakan, d1Getime1, ruangWaktuMulai, ruangWaktuAkhir],
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
+      )
     })
   }
 }

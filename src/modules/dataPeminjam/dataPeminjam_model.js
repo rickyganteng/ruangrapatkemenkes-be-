@@ -73,18 +73,22 @@ module.exports = {
   },
   createData: (setData) => {
     return new Promise((resolve, reject) => {
-      connection.query('INSERT INTO ruangan SET ?', setData, (error, result) => {
-        // !error ? resolve({result.insertId, ...setData}) : reject(new Error(error))
-        if (!error) {
-          const newResult = {
-            id: result.insertId,
-            ...setData
+      connection.query(
+        'INSERT INTO ruangan SET ?',
+        setData,
+        (error, result) => {
+          // !error ? resolve({result.insertId, ...setData}) : reject(new Error(error))
+          if (!error) {
+            const newResult = {
+              id: result.insertId,
+              ...setData
+            }
+            resolve(newResult)
+          } else {
+            reject(new Error(error))
           }
-          resolve(newResult)
-        } else {
-          reject(new Error(error))
         }
-      })
+      )
     })
   },
   createDataFasilitas: (setData) => {
@@ -140,6 +144,17 @@ module.exports = {
     return new Promise((resolve, reject) => {
       connection.query(
         'DELETE FROM ruangan WHERE id_r = ?',
+        id,
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
+      )
+    })
+  },
+  deleteDataFasilitas: (id) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'DELETE FROM fasilitas_ruangan WHERE fasilitas_ruangan_id = ?',
         id,
         (error, result) => {
           !error ? resolve(result) : reject(new Error(error))

@@ -37,7 +37,14 @@ module.exports = {
         totalData
       }
       // console.log(userId)
-      const result = await bookingRuanganModel.getUserData(userId, page, limit, offset, sort, keywords)
+      const result = await bookingRuanganModel.getUserData(
+        userId,
+        page,
+        limit,
+        offset,
+        sort,
+        keywords
+      )
       return helper.response(
         res,
         200,
@@ -75,8 +82,17 @@ module.exports = {
         limit,
         totalData
       }
-      const result = await bookingRuanganModel.getDataAllTanpaFill(keywords, sort)
-      return helper.response(res, 200, 'Succes Get Booking Data', result, pageInfo)
+      const result = await bookingRuanganModel.getDataAllTanpaFill(
+        keywords,
+        sort
+      )
+      return helper.response(
+        res,
+        200,
+        'Succes Get Booking Data',
+        result,
+        pageInfo
+      )
     } catch (error) {
       return helper.response(res, 400, 'Bad Request', error)
     }
@@ -109,17 +125,16 @@ module.exports = {
         limit,
         totalData
       }
-      const result = await bookingRuanganModel.getDataAll(limit, offset, keywords, sort)
+      const result = await bookingRuanganModel.getDataAll(
+        limit,
+        offset,
+        keywords,
+        sort
+      )
       // simpan data di redis
 
       // console.log('DATA RES', result.length)
-      return helper.response(
-        res,
-        200,
-        'Succes Get All Data',
-        result,
-        pageInfo
-      )
+      return helper.response(res, 200, 'Succes Get All Data', result, pageInfo)
     } catch (error) {
       // return helper.response(res, 400, 'Bad Request', error)
       console.log(error)
@@ -163,7 +178,9 @@ module.exports = {
         booking_ruangan_surat_dinas: ruangBuktiSuratDinas
       }
       const checkNamaRuang = await bookingRuanganModel.getDataCondition(
-        ruangYangDigunakan, ruangTanggalBooking, ruangWaktuMulai
+        ruangYangDigunakan,
+        ruangTanggalBooking,
+        ruangWaktuMulai
       )
       console.log('POST Ruangan DATA SU', setData)
 
@@ -210,6 +227,8 @@ module.exports = {
           ruangWaktuAkhir,
           idUserr
         } = req.body
+        const d1 = new Date(ruangTanggalBooking)
+        const d1Getime1 = d1.getTime()
         const setData = {
           booking_ruangan_nama: ruangNamaPeminjam,
           booking_ruangan_nip: ruangNIP,
@@ -217,7 +236,7 @@ module.exports = {
           booking_ruangan_email: ruangEmail,
           booking_ruangan_unitkerja: ruangSatker,
           booking_ruangan_direktorat: ruangDirektorat,
-          booking_ruangan_tanggal: ruangTanggalBooking,
+          booking_ruangan_tanggal: d1Getime1,
           booking_ruangan_keterangan_kegiatan_acara: ruangKeteranganAcara,
           booking_ruang_rapat_hadir_oleh: ruangRapatHadirOleh,
           booking_ruangan_penaggung_jawab: ruangPenanggungJawab,
@@ -225,26 +244,63 @@ module.exports = {
           booking_ruangan_waktu_penggunaan_awal: ruangWaktuMulai,
           booking_ruangan_waktu_penggunaan_akhir: ruangWaktuAkhir,
           id_peminjam: idUserr,
-          booking_ruangan_surat_dinas: req.file ? req.file.filename : result[0].booking_ruangan_surat_dinas,
+          booking_ruangan_surat_dinas: req.file
+            ? req.file.filename
+            : result[0].booking_ruangan_surat_dinas,
           booking_ruangan_updated_at: new Date(Date.now())
         }
+
+        const checkNamaRuangWaiting =
+          await bookingRuanganModel.getDataCondition(
+            ruangYangDigunakan,
+            d1Getime1,
+            ruangWaktuMulai,
+            ruangWaktuAkhir
+          )
+        const checkNamaRuangBooking =
+          await bookingRuanganModel.getDataConditionBookingLebihSatu(
+            ruangYangDigunakan,
+            d1Getime1,
+            ruangWaktuMulai,
+            ruangWaktuAkhir
+          )
 
         if (req.file) {
           console.log('ada file')
           if (result[0].booking_ruangan_surat_dinas.length > 0) {
-            console.log(`Delete Image${result[0].booking_ruangan_surat_dinas}`)
             const imgLoc = `src/uploads/${result[0].booking_ruangan_surat_dinas}`
             helper.deleteImage(imgLoc)
           } else {
             console.log('NO img in DB')
           }
         }
-        // console.log('UPDATE DATA', req.body)
-        // console.log(setData)
-        // console.log('MOVIE IMAGE DB', result[0].movie_image.length)
-
-        result = await bookingRuanganModel.updateData(setData, id)
-        return helper.response(res, 200, 'Succes Update Movie', result)
+        console.log('data', checkNamaRuangBooking)
+        console.log('data id', id)
+        console.log('data id', checkNamaRuangBooking.length)
+        console.log('data id', checkNamaRuangWaiting.length)
+        console.log('data id', checkNamaRuangWaiting)
+        if (checkNamaRuangBooking.length === 0) {
+          if (checkNamaRuangWaiting.length === 0) {
+            console.log('hey tayo ah')
+            result = await bookingRuanganModel.updateData(setData, id)
+            return helper.response(res, 200, 'Succes Update Movie', result)
+          } else if (checkNamaRuangWaiting.length === 1) {
+            return helper.response(res, 400, 'Tanggal booking sudah terpakai')
+          }
+        } else if (checkNamaRuangBooking.length === 1) {
+          if (checkNamaRuangBooking[0].id != id) {
+            return helper.response(res, 400, 'Tanggal booking sudah terpakai')
+          } else {
+            console.log('hey tayo')
+            result = await bookingRuanganModel.updateData(setData, id)
+            return helper.response(res, 200, 'Succes Update Movie', result)
+          }
+        }
+        // result = await bookingRuanganModel.updateData(setData, id)
+        // return helper.response(res, 200, 'Succes Update Movie', result)
+        else {
+          return helper.response(res, 400, 'Tanggal booking sudah terpakai')
+        }
       } else {
         return helper.response(
           res,
@@ -254,8 +310,22 @@ module.exports = {
         )
       }
     } catch (error) {
-      return helper.response(res, 400, 'Bad Request', error)
+      console.log('errpr', error)
+      // return helper.response(res, 400, 'Bad Request', error)
     }
+    //     result = await bookingRuanganModel.updateData(setData, id)
+    //     return helper.response(res, 200, 'Succes Update Movie', result)
+    //   } else {
+    //     return helper.response(
+    //       res,
+    //       404,
+    //       `Cannnot Update !. Data by Id ${id} not Found !`,
+    //       null
+    //     )
+    //   }
+    // } catch (error) {
+    //   return helper.response(res, 400, 'Bad Request', error)
+    // }
   },
   deletedBookingRuangan: async (req, res) => {
     try {

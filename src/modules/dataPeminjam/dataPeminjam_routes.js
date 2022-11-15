@@ -54,5 +54,6 @@ Route.delete(
   authMiddleware.isAdmin,
   movieController.deletedRuanganById
 )
+Route.delete('/fasilitas/:id', movieController.DeleteFasilitas)
 
 module.exports = Route

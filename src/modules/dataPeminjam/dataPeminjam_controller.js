@@ -41,13 +41,7 @@ module.exports = {
       // simpan data di redis
 
       // console.log('DATA RES', result.length)
-      return helper.response(
-        res,
-        200,
-        'Succes Get All Data',
-        result,
-        pageInfo
-      )
+      return helper.response(res, 200, 'Succes Get All Data', result, pageInfo)
     } catch (error) {
       return helper.response(res, 400, 'Bad Request', error)
     }
@@ -268,17 +262,13 @@ module.exports = {
       let result = await movieModel.getDataByIdFasById(id)
 
       if (result.length > 0) {
-        const {
-          id,
-          idr
-        } = req.body
+        const { id, idr } = req.body
         const setData = {
           fasilitas_ruangan_id: id,
           id_r: idr,
           nama_barang: namabarang,
           jumlah_barang: jumlahbarang,
           fasilitas_barang: kualitasbarang
-
         }
         result = await movieModel.updateData(setData, id)
         return helper.response(res, 200, 'Succes Update Movie', result)
@@ -287,6 +277,36 @@ module.exports = {
           res,
           404,
           `Cannnot Update !. Data by Id ${id} not Found !`,
+          null
+        )
+      }
+    } catch (error) {
+      return helper.response(res, 400, 'Bad Request', error)
+    }
+  },
+  DeleteFasilitas: async (req, res) => {
+    console.log('delete fasilitas ya', req.params)
+    try {
+      //   // console.log(req.params)
+      const { id } = req.params
+      let result = await movieModel.getDataByIdFasById(id)
+      console.log('hueheuheuheu', result)
+
+      if (result.length > 0) {
+        const imgLoc = `src/uploads/${result[0].image_ruangan}`
+        helper.deleteImage(imgLoc)
+        result = await movieModel.deleteDataFasilitas(id)
+        return helper.response(
+          res,
+          200,
+          `Succes Delete Movie With ID ${id}`,
+          result
+        )
+      } else {
+        return helper.response(
+          res,
+          404,
+          `Cannot Delete !.s Data by Id ${id} not Found !`,
           null
         )
       }

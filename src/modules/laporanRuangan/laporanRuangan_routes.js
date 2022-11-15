@@ -39,13 +39,6 @@ Route.get(
 //   movieController.updateMovie
 // )
 
-Route.delete(
-  '/:id',
-
-  bookingRuangController.deletedLaporanRuangan
-)
-Route.delete(
-  '/',
-  bookingRuangController.deletedLaporanAktivitasAll
-)
+Route.delete('/:id', bookingRuangController.deletedLaporanRuangan)
+Route.delete('/', bookingRuangController.deletedLaporanAktivitasAll)
 module.exports = Route

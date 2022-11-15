@@ -12,10 +12,10 @@ module.exports = {
     })
   },
   getUserData: (userId, limit, offset, keywords, sort) => {
-    console.log('qq', limit);
-    console.log('ololo', userId);
-    console.log(offset);
-    console.log(keywords);
+    console.log('qq', limit)
+    console.log('ololo', userId)
+    console.log(offset)
+    console.log(keywords)
     console.log(sort)
     return new Promise((resolve, reject) => {
       connection.query(
@@ -75,18 +75,22 @@ module.exports = {
   },
   createData: (setData) => {
     return new Promise((resolve, reject) => {
-      connection.query('INSERT INTO booking_ruangan SET ?', setData, (error, result) => {
-        // !error ? resolve({result.insertId, ...setData}) : reject(new Error(error))
-        if (!error) {
-          const newResult = {
-            id: result.insertId,
-            ...setData
+      connection.query(
+        'INSERT INTO booking_ruangan SET ?',
+        setData,
+        (error, result) => {
+          // !error ? resolve({result.insertId, ...setData}) : reject(new Error(error))
+          if (!error) {
+            const newResult = {
+              id: result.insertId,
+              ...setData
+            }
+            resolve(newResult)
+          } else {
+            reject(new Error(error))
           }
-          resolve(newResult)
-        } else {
-          reject(new Error(error))
         }
-      })
+      )
     })
   },
   updateData: (setData, id) => {
@@ -119,12 +123,53 @@ module.exports = {
       )
     })
   },
-  getDataCondition: (ruangYangDigunakan, ruangTanggalBooking, ruangWaktuMulai, ruangWaktuAkhir) => {
-    console.log('tuto', ruangYangDigunakan)
+  getDataCondition: (
+    ruangYangDigunakan,
+    d1Getime1,
+    ruangWaktuMulai,
+    ruangWaktuAkhir
+  ) => {
+    console.log('tuto fjn', ruangYangDigunakan)
     return new Promise((resolve, reject) => {
-      connection.query('SELECT * FROM booking_ruangan WHERE booking_ruangan_ruangan = ? AND booking_ruangan_tanggal = ? AND booking_ruangan_waktu_penggunaan_awal < ? AND booking_ruangan_waktu_penggunaan_akhir > ? ', [ruangYangDigunakan, ruangTanggalBooking, ruangWaktuAkhir, ruangWaktuMulai], (error, result) => {
-        !error ? resolve(result) : reject(new Error(error))
-      })
+      connection.query(
+        'SELECT * FROM waitinglist_ruangan WHERE booking_ruangan_ruangan = ?  AND booking_ruangan_tanggal = ? AND booking_ruangan_waktu_penggunaan_akhir >= ? AND booking_ruangan_waktu_penggunaan_awal <= ? ',
+        [ruangYangDigunakan, d1Getime1, ruangWaktuAkhir, ruangWaktuMulai],
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
+      )
+    })
+  },
+  // getDataCondition: (
+  //   ruangYangDigunakan,
+  //   d1Getime1,
+  //   ruangWaktuMulai,
+  //   ruangWaktuAkhir
+  // ) => {
+  //   return new Promise((resolve, reject) => {
+  //     connection.query(
+  //       'SELECT * FROM waitinglist_ruangan WHERE booking_ruangan_ruangan = ?  AND booking_ruangan_tanggal = ? AND booking_ruangan_waktu_penggunaan_akhir >= ? AND booking_ruangan_waktu_penggunaan_awal <= ? ',
+  //       [ruangYangDigunakan, d1Getime1, ruangWaktuMulai, ruangWaktuAkhir],
+  //       (error, result) => {
+  //         !error ? resolve(result) : reject(new Error(error))
+  //       }
+  //     )
+  //   })
+  // },
+  getDataConditionBookingLebihSatu: (
+    ruangYangDigunakan,
+    d1Getime1,
+    ruangWaktuMulai,
+    ruangWaktuAkhir
+  ) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'SELECT * FROM booking_ruangan WHERE booking_ruangan_ruangan = ?  AND booking_ruangan_tanggal = ? AND booking_ruangan_waktu_penggunaan_akhir >= ? AND booking_ruangan_waktu_penggunaan_awal <= ?  ',
+        [ruangYangDigunakan, d1Getime1, ruangWaktuMulai, ruangWaktuAkhir],
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
+      )
     })
   }
 }
