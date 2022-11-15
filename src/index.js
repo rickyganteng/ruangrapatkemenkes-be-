@@ -10,7 +10,13 @@ require('dotenv').config()
 const app = express()
 const port = 3002
 
-app.use(morgan('dev'))
+app.use(
+  morgan('dev', {
+    skip: function (req, res) {
+      return res.statusCode < 405
+    }
+  })
+)
 app.use(cors())
 app.options('*', cors())
 app.use(helmet())
@@ -20,7 +26,8 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(express.json())
 app.use('/backend1/api/v1', routerNavigation)
-app.use('/backend1/api', express.static('src/uploads'))
+// app.use('/backend1/api', express.static('src/uploads'))
+app.use('/backend1/api', express.static(path.join(__dirname, '/uploads')))
 
 app.listen(port, () => {
   console.log(`Express app now listen on ${port}`)
